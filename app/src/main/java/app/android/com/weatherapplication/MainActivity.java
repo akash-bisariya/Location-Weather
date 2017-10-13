@@ -160,42 +160,71 @@ public class MainActivity extends AppCompatActivity {
     private void getMinMaxDateWise(ArrayList<WeatherBean.List> arrayList) throws ParseException {
         int firstDay = arrayList.size()%8;
         ArrayList<Double> arrayListTemp;
+        HashMap<String,ArrayList<WeatherBean.Main>> tempListDateWise = new HashMap<>();
+        ArrayList<WeatherBean.Main> arrayList1 = new ArrayList<WeatherBean.Main>();
+        ArrayList<WeatherBean.Main> arrayList2 = new ArrayList<WeatherBean.Main>();
+        ArrayList<WeatherBean.Main> arrayList3 = new ArrayList<WeatherBean.Main>();
+        ArrayList<WeatherBean.Main> arrayList4 = new ArrayList<WeatherBean.Main>();
+        ArrayList<WeatherBean.Main> arrayList5 = new ArrayList<WeatherBean.Main>();
+        String dateSecondDay="",dateFirstDay="",dateThirdDay="",dateFourthDay="",dateFiveDay="";
         for(int i=0;i<arrayList.size();i++)
         {
             arrayListTemp= new ArrayList<>();
-            HashMap<String,ArrayList<WeatherBean.Main>> tempListDateWise = new HashMap<>();
-            arrayListTemp.add(arrayList.get(i).getMain().getTemp());
-            String date  =setDateFormat(Calendar.getInstance().getTime().toString());
-            String dateString = arrayList.get(i).getDtTxt();
-            dateString.substring(0,dateString.indexOf(" "));
-            ArrayList<WeatherBean.Main> arrayList1 = new ArrayList<WeatherBean.Main>();
-            ArrayList<WeatherBean.Main> arrayList2 = new ArrayList<WeatherBean.Main>();
-            ArrayList<WeatherBean.Main> arrayList3 = new ArrayList<WeatherBean.Main>();
-            ArrayList<WeatherBean.Main> arrayList4 = new ArrayList<WeatherBean.Main>();
-            ArrayList<WeatherBean.Main> arrayList5 = new ArrayList<WeatherBean.Main>();
 
+            arrayListTemp.add(arrayList.get(i).getMain().getTemp());
+            dateFirstDay  =setDateFormat(Calendar.getInstance().getTime().toString());
+
+            String dateString = arrayList.get(i).getDtTxt();
+            dateString = dateString.substring(0,dateString.indexOf(" "));
+
+
+            Date dateformat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(Calendar.getInstance().getTime().toString());
             Calendar c = Calendar.getInstance();
             c.setTime(dateformat);
             c.add(Calendar.DATE,1);
+            dateSecondDay=setDateFormat(c.getTime().toString());
 
-            if(dateString.equals(date))
+            c.setTime(dateformat);
+            c.add(Calendar.DATE,2);
+            dateThirdDay=setDateFormat(c.getTime().toString());
+
+            c.setTime(dateformat);
+            c.add(Calendar.DATE,3);
+            dateFourthDay=setDateFormat(c.getTime().toString());
+
+            c.setTime(dateformat);
+            c.add(Calendar.DATE,4);
+            dateFiveDay=setDateFormat(c.getTime().toString());
+
+
+
+            if(dateString.equals(dateFirstDay))
             {
                 arrayList1.add(arrayList.get(i).getMain());
             }
-            else if(dateString.equals(date))
+            else if(dateString.equals(dateSecondDay))
             {
                 arrayList2.add(arrayList.get(i).getMain());
             }
-            else if(dateString.equals(date))
+            else if(dateString.equals(dateThirdDay))
             {
                 arrayList3.add(arrayList.get(i).getMain());
             }
-            else if(dateString.equals(date))
+            else if(dateString.equals(dateFourthDay))
             {
-
+                arrayList4.add(arrayList.get(i).getMain());
             }
-
+            else if(dateString.equals(dateFiveDay))
+            {
+                arrayList5.add(arrayList.get(i).getMain());
+            }
         }
+        tempListDateWise.put(dateFirstDay,arrayList1);
+        tempListDateWise.put(dateSecondDay,arrayList2);
+        tempListDateWise.put(dateThirdDay,arrayList3);
+        tempListDateWise.put(dateFourthDay,arrayList4);
+        tempListDateWise.put(dateFiveDay,arrayList5);
+
     }
 
 //    public class Comparator extends java.util.Comparator<>
