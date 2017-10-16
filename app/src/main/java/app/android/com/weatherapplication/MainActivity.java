@@ -2,6 +2,7 @@ package app.android.com.weatherapplication;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivWeatherIcon;
     @BindView(R.id.rv_weather_data)
     RecyclerView rvWeatherData;
+    HashMap<String,ArrayList<WeatherBean.Main>> tempListDateWise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         final IWeatherApi weatherApi = retrofit.create(IWeatherApi.class);
 
-
+        rvWeatherData.setLayoutManager(new LinearLayoutManager(this));
         btnCityName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,17 +130,25 @@ public class MainActivity extends AppCompatActivity {
                 resForgotPasswordCall.enqueue(new Callback<WeatherBean>() {
                     @Override
                     public void onResponse(Call<WeatherBean> call, Response<WeatherBean> response) {
-                        ArrayList<WeatherBean.List> arrayList= new ArrayList<WeatherBean.List>();
-                        for(int i=0;i<response.body().getList().size();i++)
-                        {
-                            arrayList.add(response.body().getList().get(i));
+                        if(response.body()!=null) {
+                            ArrayList<WeatherBean.List> arrayList = new ArrayList<WeatherBean.List>();
+                            for (int i = 0; i < response.body().getList().size(); i++) {
+                                arrayList.add(response.body().getList().get(i));
+                            }
+                            try {
+                                getMinMaxDateWise(arrayList);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            rvWeatherData.setAdapter(new RecyclerAdapter(MainActivity.this, tempListDateWise));
                         }
-                        try {
-                            getMinMaxDateWise(arrayList);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        else {
+                            try {
+                                Toast.makeText(MainActivity.this,response.errorBody().string(),Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        rvWeatherData.setAdapter(new RecyclerAdapter(MainActivity.this,new ArrayList<WeatherBean.List>()));
                     }
 
                     @Override
@@ -160,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     private void getMinMaxDateWise(ArrayList<WeatherBean.List> arrayList) throws ParseException {
         int firstDay = arrayList.size()%8;
         ArrayList<Double> arrayListTemp;
-        HashMap<String,ArrayList<WeatherBean.Main>> tempListDateWise = new HashMap<>();
+        tempListDateWise = new HashMap<>();
         ArrayList<WeatherBean.Main> arrayList1 = new ArrayList<WeatherBean.Main>();
         ArrayList<WeatherBean.Main> arrayList2 = new ArrayList<WeatherBean.Main>();
         ArrayList<WeatherBean.Main> arrayList3 = new ArrayList<WeatherBean.Main>();
@@ -219,11 +230,26 @@ public class MainActivity extends AppCompatActivity {
                 arrayList5.add(arrayList.get(i).getMain());
             }
         }
+        Collections.sort(arrayList1, (t1, t2) -> (int)(t1.getTempMax()-t2.getTempMax()));
+        Collections.sort(arrayList2, (t1, t2) -> (int)(t1.getTempMax()-t2.getTempMax()));
+        Collections.sort(arrayList3, (t1, t2) -> (int)(t1.getTempMax()-t2.getTempMax()));
+        Collections.sort(arrayList4, (t1, t2) -> (int)(t1.getTempMax()-t2.getTempMax()));
+        Collections.sort(arrayList5, (t1, t2) -> (int)(t1.getTempMax()-t2.getTempMax()));
+
+
         tempListDateWise.put(dateFirstDay,arrayList1);
         tempListDateWise.put(dateSecondDay,arrayList2);
         tempListDateWise.put(dateThirdDay,arrayList3);
         tempListDateWise.put(dateFourthDay,arrayList4);
         tempListDateWise.put(dateFiveDay,arrayList5);
+
+
+
+
+
+
+
+
 
     }
 

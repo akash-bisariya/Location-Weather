@@ -2,16 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1"
-    >
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_temp"
+        android:id="@+id/tv_temp_max"
         android:text="dfsvglkjdflkg"
         android:gravity="center"
+        android:layout_margin="5dp"
+        android:layout_weight=".5"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_temp_min"
+        android:text="dfsvglkjdflkg"
+        android:gravity="center"
+        android:layout_margin="5dp"
         android:layout_weight=".5"/>
 
     <ImageView
