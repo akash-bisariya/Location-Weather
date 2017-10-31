@@ -1,12 +1,20 @@
-package app.android.com.weatherapplication;
+package app.android.com.weatherapplication.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+
 /**
  * Created by akash on 12/10/17.
  */
-public class WeatherBean {
+public class OpenWeather5DayModel {
 
     @SerializedName("cod")
     @Expose
@@ -23,6 +31,7 @@ public class WeatherBean {
     @SerializedName("city")
     @Expose
     private City city;
+
 
     public String getCod() {
         return cod;
@@ -455,5 +464,95 @@ public class WeatherBean {
             this.deg = deg;
         }
 
+    }
+
+    public HashMap<String, ArrayList<OpenWeather5DayModel.Main>> getMinMaxTemp() throws ParseException {
+
+        ArrayList<List> arrayList = new ArrayList<>();
+        arrayList.addAll(getList());
+        return getDateWise(arrayList);
+
+    }
+
+
+     private HashMap<String, ArrayList<OpenWeather5DayModel.Main>> getDateWise(ArrayList<OpenWeather5DayModel.List> arrayList) throws ParseException {
+        ArrayList<Double> arrayListTemp;
+        HashMap<String, ArrayList<OpenWeather5DayModel.Main>> tempListDateWise = new HashMap<>();
+        ArrayList<OpenWeather5DayModel.Main> arrayList1 = new ArrayList<>();
+        ArrayList<OpenWeather5DayModel.Main> arrayList2 = new ArrayList<>();
+        ArrayList<OpenWeather5DayModel.Main> arrayList3 = new ArrayList<>();
+        ArrayList<OpenWeather5DayModel.Main> arrayList4 = new ArrayList<>();
+        ArrayList<OpenWeather5DayModel.Main> arrayList5 = new ArrayList<>();
+        String dateSecondDay = "", dateFirstDay = "", dateThirdDay = "", dateFourthDay = "", dateFiveDay = "";
+        for (int i = 0; i < arrayList.size(); i++) {
+            arrayListTemp = new ArrayList<>();
+
+            arrayListTemp.add(arrayList.get(i).getMain().getTemp());
+            dateFirstDay = setDateFormat(Calendar.getInstance().getTime().toString());
+
+            String dateString = arrayList.get(i).getDtTxt();
+            dateString = dateString.substring(0, dateString.indexOf(" "));
+
+
+            Date dateformat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(Calendar.getInstance().getTime().toString());
+            Calendar c = Calendar.getInstance();
+            c.setTime(dateformat);
+            c.add(Calendar.DATE, 1);
+            dateSecondDay = setDateFormat(c.getTime().toString());
+
+            c.setTime(dateformat);
+            c.add(Calendar.DATE, 2);
+            dateThirdDay = setDateFormat(c.getTime().toString());
+
+            c.setTime(dateformat);
+            c.add(Calendar.DATE, 3);
+            dateFourthDay = setDateFormat(c.getTime().toString());
+
+            c.setTime(dateformat);
+            c.add(Calendar.DATE, 4);
+            dateFiveDay = setDateFormat(c.getTime().toString());
+
+
+            if (dateString.equals(dateFirstDay)) {
+                arrayList1.add(arrayList.get(i).getMain());
+            } else if (dateString.equals(dateSecondDay)) {
+                arrayList2.add(arrayList.get(i).getMain());
+            } else if (dateString.equals(dateThirdDay)) {
+                arrayList3.add(arrayList.get(i).getMain());
+            } else if (dateString.equals(dateFourthDay)) {
+                arrayList4.add(arrayList.get(i).getMain());
+            } else if (dateString.equals(dateFiveDay)) {
+                arrayList5.add(arrayList.get(i).getMain());
+            }
+        }
+
+        Collections.sort(arrayList1, new Comparator());
+        Collections.sort(arrayList2, new Comparator());
+        Collections.sort(arrayList3, new Comparator());
+        Collections.sort(arrayList4, new Comparator());
+        Collections.sort(arrayList5, new Comparator());
+
+
+        tempListDateWise.put(dateFirstDay, arrayList1);
+        tempListDateWise.put(dateSecondDay, arrayList2);
+        tempListDateWise.put(dateThirdDay, arrayList3);
+        tempListDateWise.put(dateFourthDay, arrayList4);
+        tempListDateWise.put(dateFiveDay, arrayList5);
+
+        return tempListDateWise;
+
+    }
+
+    private class Comparator implements java.util.Comparator<OpenWeather5DayModel.Main> {
+
+        @Override
+        public int compare(OpenWeather5DayModel.Main t1, OpenWeather5DayModel.Main t2) {
+            return (int) (t1.getTempMax() - t2.getTempMax());
+        }
+    }
+
+    private String setDateFormat(String unformattedDate) throws ParseException {
+        Date dateformat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(unformattedDate);
+        return (new SimpleDateFormat("yyyy-MM-dd")).format(dateformat);
     }
 }

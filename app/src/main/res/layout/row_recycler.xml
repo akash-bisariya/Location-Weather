@@ -23,11 +23,13 @@
         android:layout_margin="5dp"
         android:layout_weight=".5"/>
 
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
-        android:id="@+id/iv_weather"
+        android:id="@+id/tv_weather_date"
+        android:gravity="center"
+        android:maxLines="1"
+        android:layout_margin="5dp"
         android:layout_weight=".5"/>
 
 </LinearLayout>

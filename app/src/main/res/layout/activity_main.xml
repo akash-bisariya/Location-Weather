@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="app.android.com.weatherapplication.MainActivity">
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter city name"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/btn_get_weather"
         app:layout_constraintTop_toBottomOf="@+id/et_city_name"
-        android:text="Get Weather"
+        android:text="Get Weather Via AccuWeather API"
         android:layout_below="@id/et_city_name"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -93,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_get_5_days_weather"
-        android:text="Get 5 days Weather"
+        android:text="Get 5 days Weather Via AccuWeather API"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
